@@ -1,8 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>canvasへの文字描画</title></head>
 <link rel="stylesheet" type="text/css" media="all"
     href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" />
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
 
+<body>
+<button onclick="saveCanvas('croppedCanvas');">保存する</button>
+</p>
 <input type="file" id="uploader">
 <div>
     <table>
@@ -17,9 +23,9 @@
     </table>
 </div>
 <script>
-    let cropper = null;
-    const cropAspectRatio = 9.0 / 16.0;
-    const scaledWidth = 200;
+	let cropper = null;
+    const cropAspectRatio = 12.0 / 19.0;
+    const scaledWidth = 700;
 
     const cropImage = function (evt) {
         const files = evt.target.files;
@@ -79,32 +85,34 @@
 
     const uploader = document.getElementById('uploader');
     uploader.addEventListener('change', cropImage);
+
+//Base64データをBlobデータに変換
+function toBlob(base64) {
+	var bin = atob(base64.replace(/^.*,/, ''));
+	var buffer = new Uint8Array(bin.length);
+	for (var i = 0; i < bin.length; i++) {
+		buffer[i] = bin.charCodeAt(i);
+	}
+	var blob = new Blob([buffer.buffer], {type: 'image/png'});
+	return blob;
+}
+//
+function saveCanvas(canvas_id)
+{
+	var canvas = document.getElementById(canvas_id);
+	var uri = canvas.toDataURL('image/png', 1);
+	if (canvas.msToBlob) { //IE対応
+		var blob = toBlob(uri);
+		window.navigator.msSaveBlob(blob, 'download.png');
+	} else {
+		//アンカータグを作成
+		var a = document.createElement('a');
+		a.href = uri;
+		a.download = 'download.png';
+		//クリックイベントを発生させる
+		a.click();
+	}
+}
 </script>
-<!-- 
-<video id="player" autoplay muted playsinline></video>
-<button id="capture">Capture</button>
-<canvas id="snapshot" width=320 height=240></canvas>
-<script>
-  var player = document.getElementById('player'); 
-  var snapshotCanvas = document.getElementById('snapshot');
-  var captureButton = document.getElementById('capture');
-
-  var handleSuccess = function(stream) {
-    // Attach the video stream to the video element and autoplay.
-    player.srcObject = stream;
-  };
-
-  captureButton.addEventListener('click', function() {
-    var context = snapshot.getContext('2d');
-    // Draw the video frame to the canvas.
-    context.drawImage(player, 0, 0, snapshotCanvas.width, 
-        snapshotCanvas.height);
-  });
-
-  navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode:{exact: 'environment'}
-        }
-      })
-      .then(handleSuccess);
-</script> -->
+</body>
+</html>
