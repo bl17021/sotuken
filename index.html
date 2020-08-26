@@ -18,6 +18,10 @@
         snapshotCanvas.height);
   });
 
-  navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:"enviroment"}} })
+  navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode:{exact: 'environment'}
+        }
+      })
       .then(handleSuccess);
 </script>
