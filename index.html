@@ -2,13 +2,6 @@
 <button id="capture">Capture</button>
 <canvas id="snapshot" width=320 height=240></canvas>
 <script>
-  const constraints = {
-    audio: false,
-    video: {
-      // facingMode: "user"   // フロントカメラを利用する
-      facingMode: { exact: "environment" }  // リアカメラを利用する場合
-    }
-  };
   var player = document.getElementById('player'); 
   var snapshotCanvas = document.getElementById('snapshot');
   var captureButton = document.getElementById('capture');
@@ -25,6 +18,6 @@
         snapshotCanvas.height);
   });
 
-  navigator.mediaDevices.getUserMedia({video: true})
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:"enviroment"}} })
       .then(handleSuccess);
 </script>
