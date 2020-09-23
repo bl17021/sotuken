@@ -116,5 +116,14 @@ function saveCanvas(canvas_id)
 }
 </script>
 <button onclick="saveCanvas('croppedCanvas');">保存する</button>
+<!-- 文字認識テスト -->
+<input type="button" value="文字認識テスト" id="moji">
+<script>
+var Tesseract = require('tesseract.js');
+Tesseract.recognize('download 3.png', {lang: 'jpn'})
+.then(function(result){
+    console.log(result)
+})
+</script>
 </body>
 </html>
