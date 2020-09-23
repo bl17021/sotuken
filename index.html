@@ -122,7 +122,7 @@ function saveCanvas(canvas_id)
 // var Tesseract = require('tesseract.js');
 Tesseract.recognize('download 3.png', {lang: 'jpn'})
 .then(function(result){
-    console.log(result)
+    console.log(result.text);
 });
 </script>
 </body>
