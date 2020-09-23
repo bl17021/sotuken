@@ -119,7 +119,7 @@ function saveCanvas(canvas_id)
 <!-- 文字認識テスト -->
 <input type="button" value="文字認識テスト" id="moji">
 <script>
-var Tesseract = require('tesseract.js');
+// var Tesseract = require('tesseract.js');
 Tesseract.recognize('download 3.png', {lang: 'jpn'})
 .then(function(result){
     console.log(result)
