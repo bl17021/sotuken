@@ -5,11 +5,12 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" />
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
+<script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
 
 <body>
 
 </p>
-<input type="file" id="uploader" value="写真を撮る">
+<input type="file" id="uploader" >
 <div>
     <table>
         <tr>
@@ -96,12 +97,12 @@ function toBlob(base64) {
 	var blob = new Blob([buffer.buffer], {type: 'image/png'});
 	return blob;
 }
-//
+
 function saveCanvas(canvas_id)
 {
 	var canvas = document.getElementById(canvas_id);
 	var uri = canvas.toDataURL('image/png', 1);
-	if (canvas.msToBlob) { //IE対応
+	if (canvas.msToBlob) { 
 		var blob = toBlob(uri);
 		window.navigator.msSaveBlob(blob, 'download.png');
 	} else {
