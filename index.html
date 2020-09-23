@@ -1,140 +1,129 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>OCR APP</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no, minimal-ui">
-    <!-- meta name="apple-mobile-web-app-capable" content="yes" -->
-    <link rel="stylesheet" href="index.css" />
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.7/dist/tesseract.js"></script>
-    <script>
-        (function() {
-            Tesseract
-                .recognize("u.jpg", {
-                    lang: 'jpn'
-                })
-                .progress(function(p) {
-                    $("#msg").text('準備中🐹 <' + p.status + ": " + (100 * p.progress).toFixed(1) + '%>')
-                })
-                .then(function(result) {
-                    $("#msg").text('準備完了🐸')
-                });
-        }());
-    </script>
-</head>
+<head><meta charset="UTF-8"><title>canvasへの文字描画</title></head>
+<link rel="stylesheet" type="text/css" media="all"
+    href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
+<script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
 
 <body>
-    <div align="center">
-        <video id="player" controls autoplay playsinline></video>
-        <canvas id="canvas" width="300" height="100"></canvas>
-        <div class="button">
-            <button id="capture">日本語を撮影する</button>
-        </div>
-        <div class="button">
-            <button id="captureeng">Capture English</button>
-        </div>
-        <div id="msg" align="center"></div>
-        <canvas id="snapshot" width="300" height="100"></canvas>
-        <br>
-        <script>
-            var video = document.getElementById("player"),
-                canvas = document.getElementById("canvas"),
-                ctx = canvas.getContext("2d");
-            requestAnimationFrame(draw);
-    
-            function draw() {
-                canvas.width = 300;
-                canvas.height = 100;
-                ctx.drawImage(video, 100, 300, 600, 200,
-                    0, 0, 300, 100);
-                imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    ave = (data[i + 0] + data[i + 1] + data[i + 2]) / 3;
-                    data[i + 0] =
-                        data[i + 1] =
-                        data[i + 2] = (ave > 128) ? 255 : 0;
-                    data[i + 3] = 255;
-                }
-                ctx.putImageData(imgData, 0, 0);
-                requestAnimationFrame(draw);
-            }
-            var snapshotCanvas = document.getElementById('snapshot');
-            var captureButton = document.getElementById('capture');
-            var captureButtoneng = document.getElementById('captureeng');
-            var snapshotButton = document.getElementById('snapshotbutton');
-            var handleSuccess = function(stream) {
-                video.srcObject = stream;
-            };
-            var num = 1;
-    
-            captureButton.addEventListener('click', function() {
-                var context = snapshot.getContext('2d');
-                context.drawImage(video, 100, 300, 600, 200, 0, 0, snapshotCanvas.width,
-                    snapshotCanvas.height);
-                const url = snapshot.toDataURL("image/png");
-                Tesseract
-                    .recognize(url, {
-                        lang: 'jpn'
-                    })
-                    .progress(function(p) {
-                        $("#msg").text(p.status + ": " + p.progress)
-                    })
-                    .then(function(result) {
-                        console.log(result)
-                        $("#msg").text("Progress Complete")
-                        var elem = document.createElement('div');
-                        elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + url + " /></div><br>"
-                        var parent = document.getElementById("results");
-                        parent.insertBefore(elem, parent.firstChild);
-                        var numdiv = document.getElementById(num);
-                        var msg = document.createElement('div');
-                        msg.innerHTML = result.text;
-                        numdiv.appendChild(msg);
-                        num += 1;
-                    });
-            });
-            captureButtoneng.addEventListener('click', function() {
-                var context = snapshot.getContext('2d');
-                context.drawImage(video, 100, 300, 600, 200, 0, 0, snapshotCanvas.width,
-                    snapshotCanvas.height);
-                const url = snapshot.toDataURL("image/png");
-                Tesseract
-                    .recognize(url, {
-                        lang: 'eng'
-                    })
-                    .progress(function(p) {
-                        $("#msg").text(p.status + ": " + p.progress)
-                    })
-                    .then(function(result) {
-                        console.log(result)
-                        $("#msg").text("Progress Complete")
-                        var elem = document.createElement('div');
-                        elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + url + " /></div><br>"
-                        var parent = document.getElementById("results");
-                        parent.insertBefore(elem, parent.firstChild);
-                        var numdiv = document.getElementById(num);
-                        var msg = document.createElement('div');
-                        msg.innerHTML = result.text;
-                        numdiv.appendChild(msg);
-                        num += 1;
-                    });
-            });
-            var front = false;
-            var constraints = {
-                audio: false,
-                video: {
-                    width: 1920,
-                    height: 1080,
-                    facingMode: (front ? "user" : "environment")
-                }
-            };
-            navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess);
-        </script>
-    </div>
-</body>
-<div id="results" align="center"></div>
 
+</p>
+<input type="file" id="uploader" >
+<div>
+    <table>
+        <tr>
+            <th>元画像</th>
+            <th>クロップ後の画像</th>
+        </tr>
+        <tr>
+            <td><canvas id="sourceCanvas" width="1" height="1"></canvas></td>
+            <td><canvas id="croppedCanvas" width="1" height="1"></canvas></td>
+        </tr>
+    </table>
+</div>
+<script>
+	let cropper = null;
+    const cropAspectRatio = 12.0 / 20.0;
+    const scaledWidth = 700;
+
+    const cropImage = function (evt) {
+        const files = evt.target.files;
+        if (files.length == 0) {
+            return;
+        }
+        let file = files[0];
+        let image = new Image();
+        let reader = new FileReader();
+        reader.onload = function (evt) {
+            image.onload = function () {
+                let scale = scaledWidth / image.width;
+                let imageData = null;
+                {
+                    const canvas = document.getElementById("sourceCanvas");
+                    {
+                        let ctx = canvas.getContext("2d");
+                        canvas.width = image.width * scale;
+                        canvas.height = image.height * scale;
+                        ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+                    }
+                    if (cropper != null) {
+                        // 画像を再読み込みした場合は破棄が必要
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(canvas, {
+                        aspectRatio: cropAspectRatio,
+                        movable: false,
+                        scalable: false,
+                        zoomable: false,
+                        data: {
+                            width: canvas.width,
+                            height: canvas.width * cropAspectRatio
+                        },
+                        crop: function (event) {
+                            const croppedCanvas = document.getElementById("croppedCanvas");
+                            {
+                                let ctx = croppedCanvas.getContext("2d");
+                                let croppedImageWidth = image.height * cropAspectRatio;
+                                croppedCanvas.width = image.width;
+                                croppedCanvas.height = image.height;
+                                croppedCanvas.width = croppedImageWidth * scale;
+                                croppedCanvas.height = image.height * scale;
+                                ctx.drawImage(image,
+                                    event.detail.x / scale, event.detail.y / scale, event.detail.width / scale, event.detail.height / scale,
+                                    0, 0, croppedCanvas.width, croppedCanvas.height
+                                );
+                            }
+                        }
+                    });
+                }
+            }
+            image.src = evt.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+
+    const uploader = document.getElementById('uploader');
+    uploader.addEventListener('change', cropImage);
+
+//Base64データをBlobデータに変換
+function toBlob(base64) {
+	var bin = atob(base64.replace(/^.*,/, ''));
+	var buffer = new Uint8Array(bin.length);
+	for (var i = 0; i < bin.length; i++) {
+		buffer[i] = bin.charCodeAt(i);
+	}
+	var blob = new Blob([buffer.buffer], {type: 'image/png'});
+	return blob;
+}
+
+function saveCanvas(canvas_id)
+{
+	var canvas = document.getElementById(canvas_id);
+	var uri = canvas.toDataURL('image/png', 1);
+	if (canvas.msToBlob) { 
+		var blob = toBlob(uri);
+		window.navigator.msSaveBlob(blob, 'download.png');
+	} else {
+		//アンカータグを作成
+		var a = document.createElement('a');
+		a.href = uri;
+		a.download = 'download.png';
+		//クリックイベントを発生させる
+		a.click();
+	}
+}
+</script>
+<button onclick="saveCanvas('croppedCanvas');">保存する</button>
+<!-- 文字認識テスト -->
+<input type="button" value="文字認識テスト" id="moji">
+<script>
+// var Tesseract = require('tesseract.js');
+Tesseract.recognize('download 3.png', {lang: 'jpn'})
+.then(function(result){
+    console.log(result)
+});
+</script>
+</body>
 </html>
